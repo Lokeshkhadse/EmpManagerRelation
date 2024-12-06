@@ -7,10 +7,13 @@ import java.util.Map;
 
 public interface ManagerForEmployeeService {
 
-    ManagerForEmployee addRelation( int managerId, int empId);
+    ManagerForEmployee addRelation(int managerId, int empId);
 
-    //List<ManagerForEmployee> getHierarchy(int emp_id);
+    Map<String, Object> gethierarchy(int empId);
 
 
-    Map<String, Object> getHierarchy(int empId);
+    // public List<EmployeeHierarchyDto> getHierarchy(int empId);
+
+
 }
+

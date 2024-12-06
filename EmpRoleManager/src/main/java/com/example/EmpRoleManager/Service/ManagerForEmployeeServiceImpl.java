@@ -7,12 +7,10 @@ import com.example.EmpRoleManager.Entity.Employee;
 import com.example.EmpRoleManager.Entity.ManagerForEmployee;
 import com.example.EmpRoleManager.Entity.RoleMapping;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ManagerForEmployeeServiceImpl implements ManagerForEmployeeService {
@@ -40,45 +38,92 @@ public class ManagerForEmployeeServiceImpl implements ManagerForEmployeeService 
     }
 
     @Override
-    public Map<String, Object> getHierarchy(int empId) {
-        Map<String, Object> response = new HashMap<>();
-
-        Employee employee = employeeDao.getEmployee(empId);
-        RoleMapping roleMapping = roleMappingDao.getRoleMapping(empId);
-
-        if (employee != null) {
-            response.put("manager_id", empId);
-            response.put("name", employee.getName());
-            response.put("phno", employee.getPhno());
-        } else {
-            response.put("manager_id", empId);
-            response.put("name", "Not found");
-            response.put("phno", "Not found");
-        }
-
-        List<Integer> employeeIdsUnderManager = managerForEmployeeDao.getHierarchy(empId);
-
-        response.put("employees", employeeIdsUnderManager);
-
-        return response;
+    public Map<String, Object> gethierarchy(int empId) {
+        return gethierarchy(empId, new HashSet<>());
     }
 
+    public Map<String, Object> gethierarchy(int empId, Set<Integer> set) {
+        Map<String, Object> map = new HashMap<>();
+
+        // Avoid cycles by checking if empId is already in the set
+        if (set.contains(empId)) {
+            return map;
+        }
+
+        // Add empId to the set to track the visited employees
+        set.add(empId);
+
+        Employee employee = this.employeeDao.getEmployee(empId);
+        if (employee == null) {
+            throw new RuntimeException("Employee not found for empId: " + empId);
+        }
+        System.out.println("employee Object: " + employee);
+
+        int roleMapId = this.roleMappingDao.findByEmp(empId);
+        System.out.println("roleMapping Object: " + roleMapId);
+
+        if (roleMapId == 0) {
+            throw new RuntimeException("roleMapping is null");
+        }
+
+        List<Integer> employeesUnderManagerList = this.managerForEmployeeDao.findEmpsUnderManager(roleMapId);
+        System.out.println("employeesUnderManagerList: " + employeesUnderManagerList);
+
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (var employees : employeesUnderManagerList) {
+            Map<String, Object> subHierarchy = gethierarchy(employees, set);
+//            System.out.println("subHierarchy: " + subHierarchy);
+
+            list.add(subHierarchy);
+        }
+
+        Map<String, Object> managersMap = new HashMap<>();
+        managersMap.put("empId", employee.getEmp_id());
+        managersMap.put("empName", employee.getName());
+        managersMap.put("phoneNumber", employee.getPhno());
+        managersMap.put("reporting Employees", list);
+
+
+
+        map.put("message", "fetched successfully");
+        map.put("status", HttpStatus.OK.value());
+        map.put("result", managersMap);
+
+
+
+        set.remove(empId);
+
+        return map;
+    }
+
+
 //    @Override
-//    public List<ManagerForEmployee> getHierarchy(int emp_id) {
+//    public List<EmployeeHierarchyDto> getHierarchy(int empId) {
+//        List<EmployeeHierarchyDto> hierarchyList = new ArrayList<>();
 //
-//        List<ManagerForEmployee> processedList = new ArrayList<>();
-//
-//
-//        Employee employee = employeeDao.getEmployee(emp_id);
-//        RoleMapping roleMapping = roleMappingDao.getRoleMapping(emp_id);
-//
-//        List<ManagerForEmployee>list = managerForEmployeeDao.getHierarchy(roleMapping.getRolemap_id());
-//
-//        for(ManagerForEmployee e : list){
-//            processedList.add(e);
+//        Employee manager = employeeDao.getEmployee(empId);
+//        if (manager != null) {
+//            hierarchyList.add(new EmployeeHierarchyDto(manager.getEmp_id(), manager.getName(), manager.getPhno()));
+//        } else {
+//            return hierarchyList;
 //        }
 //
-//        return managerForEmployeeDao.getHierarchy(emp_id);
+//        RoleMapping roles = roleMappingDao.getRoleMapping(empId);
 //
+//
+//        List<Integer> employeeIdsUnderManager = managerForEmployeeDao.getHierarchy(empId);
+//
+//        for (Integer empUnderManager : employeeIdsUnderManager) {
+//            Employee employee = employeeDao.getEmployee(empUnderManager);
+//            if (employee != null) {
+//                hierarchyList.add(new EmployeeHierarchyDto(employee.getEmp_id(), employee.getName(), employee.getPhno()));
+//            }
+//        }
+//
+//        return hierarchyList;
 //    }
+
+
+
+
 }
