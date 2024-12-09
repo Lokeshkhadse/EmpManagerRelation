@@ -14,8 +14,8 @@ public class EmployeeDao {
 
     public Employee addEmployee(Employee employee) {
 
-        String sql = "INSERT INTO employee(emp_id, name, phno) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, employee.getEmp_id(), employee.getName(), employee.getPhno());
+        String sql = "INSERT INTO employee(emp_id, name, phno,mail) VALUES (?, ?, ?,?)";
+        jdbcTemplate.update(sql, employee.getEmp_id(), employee.getName(), employee.getPhno(),employee.getMail());
         return employee;
 
     }
@@ -27,8 +27,17 @@ public class EmployeeDao {
         return jdbcTemplate.queryForObject(sql,new Object[]{emp_id}, new BeanPropertyRowMapper<>(Employee.class));
     }
 
+    public void updateEmployee(Employee employee){
+        String sql = "update employee set name=? , phno = ? set mail= ? where emp_id=?";
+        jdbcTemplate.update(sql,employee.getName(),employee.getPhno(),employee.getMail(),employee.getEmp_id());
+
+    }
 
 
+    public void updateEmployeeEmail(int empId, String email) {
+        String sql = "UPDATE employee SET mail = ? WHERE emp_id = ?";
+        jdbcTemplate.update(sql, email, empId);
+    }
 
 
 }

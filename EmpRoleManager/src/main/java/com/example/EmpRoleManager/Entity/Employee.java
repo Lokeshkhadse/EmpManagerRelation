@@ -1,10 +1,8 @@
 package com.example.EmpRoleManager.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.processing.Pattern;
 
 @Getter
 @Setter
@@ -20,4 +18,9 @@ public class Employee {
     private String name;
 
     private String phno;
+
+    private String mail;
+
+
+
 }
