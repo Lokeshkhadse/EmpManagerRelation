@@ -4,7 +4,6 @@ import com.example.EmpRoleManager.Dao.EmployeeDao;
 import com.example.EmpRoleManager.Dao.RoleDao;
 import com.example.EmpRoleManager.Dao.RoleMappingDao;
 import com.example.EmpRoleManager.Entity.Employee;
-import com.example.EmpRoleManager.Entity.Stock;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +31,11 @@ public class EmployeeServiceImpl implements  EmployeeService {
     @Autowired
     private EmailService emailService;
 
-    @Autowired
-    private StockFeignClient stockFeignClient;
-
-    @Autowired
-    private  WebclientService webclientService;
+//    @Autowired
+//    private StockFeignClient stockFeignClient;
+//
+//    @Autowired
+//    private  WebclientService webclientService;
 
     public Employee addEmployee(Employee employee) {
         employeeDao.addEmployee(employee);
@@ -144,20 +143,20 @@ public class EmployeeServiceImpl implements  EmployeeService {
 
 
 
-    @Override
-    public Map<String, Object> addStock(Stock stock) {
-        return stockFeignClient.addStock(stock).getBody();
-    }
-
-    @Override
-    public Map<String, Object> getStockByCategory(String category) {
-        return stockFeignClient.getStockByCategory(category).getBody();
-    }
-
-
-    public Mono<Map> getStockByCategorythorughwebClient(String category) {
-        return webclientService.getStockByCategorythorughwebClient(category);  // Call WebClient service to get stock data by category
-    }
+//    @Override
+//    public Map<String, Object> addStock(Stock stock) {
+//        return stockFeignClient.addStock(stock).getBody();
+//    }
+//
+//    @Override
+//    public Map<String, Object> getStockByCategory(String category) {
+//        return stockFeignClient.getStockByCategory(category).getBody();
+//    }
+//
+//
+//    public Mono<Map> getStockByCategorythorughwebClient(String category) {
+//        return webclientService.getStockByCategorythorughwebClient(category);  // Call WebClient service to get stock data by category
+//    }
 
 
 

@@ -2,7 +2,9 @@ package com.example.EmpRoleManager.Controller;
 
 import com.example.EmpRoleManager.Entity.Employee;
 import com.example.EmpRoleManager.Entity.Stock;
+import com.example.EmpRoleManager.ExternalService.StockService;
 import com.example.EmpRoleManager.Service.EmployeeService;
+import com.example.EmpRoleManager.WebClientService.StockWebClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,12 @@ public class EmployeeController
 
    @Autowired
     private EmployeeService employeeService;
+   
+   @Autowired
+   private StockService stockService;
+
+   @Autowired
+   private StockWebClientService stockWebClientService;
 
     @PostMapping("/add")
     public ResponseEntity<Employee> addEmployee(@RequestBody Employee employee) {
@@ -53,13 +61,13 @@ public class EmployeeController
     }
 
 
+    //feignclient
 
-//
 //    @PostMapping("/addstock")
 //    public ResponseEntity<Map<String, Object>> addStock(@RequestBody Stock stock) {
 //        try {
-//            Map<String, Object> result = employeeService.addStock(stock);
-//            return new ResponseEntity<>(result, HttpStatus.CREATED);
+//            Map<String, Object> response = stockService.addStock(stock);
+//            return new ResponseEntity<>(response, HttpStatus.CREATED);
 //        } catch (Exception e) {
 //            return new ResponseEntity<>(Map.of("message", "Failed to add stock", "error", e.getMessage()), HttpStatus.BAD_REQUEST);
 //        }
@@ -68,23 +76,34 @@ public class EmployeeController
 //    @GetMapping("/getcategorydata")
 //    public ResponseEntity<Map<String, Object>> getStockByCategory(@RequestParam String category) {
 //        try {
-//            Map<String, Object> result = employeeService.getStockByCategory(category);
-//            return new ResponseEntity<>(result, HttpStatus.OK);
+//            Map<String, Object> response = stockService.getStockCategory(category);
+//            return new ResponseEntity<>(response, HttpStatus.OK);
 //        } catch (Exception e) {
 //            return new ResponseEntity<>(Map.of("message", "Failed to fetch stock by category", "error", e.getMessage()), HttpStatus.BAD_REQUEST);
 //        }
 //    }
 
 
+    //WEBCLIENT
 
-
-    @GetMapping("/getcategorydata")
-    public ResponseEntity<Map<String, Object>> getStockByCategorythorughwebClient(@RequestParam("category") String category) {
+    @PostMapping("/addstock")
+    public ResponseEntity<Map<String, Object>> addStockWebclient(@RequestBody Stock stock) {
         try {
-            Map<String, Object> result = employeeService.getStockByCategorythorughwebClient(category).block();  // Use block() to wait for response
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            Map<String, Object> response = stockWebClientService.addStock(stock).block(); // Blocking for simplicity
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(Map.of("message", "Failed to fetch stock data", "error", e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Map.of("message", "Failed to add stock", "error", e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // Get Stock by Category
+    @GetMapping("/getcategorydata")
+    public ResponseEntity<Map<String, Object>> getStockByCategoryWebclient(@RequestParam String category) {
+        try {
+            Map<String, Object> response = stockWebClientService.getStockByCategory(category).block(); // Blocking for simplicity
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(Map.of("message", "Failed to fetch stock by category", "error", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
