@@ -54,26 +54,43 @@ public class EmployeeController
 
 
 
+//
+//    @PostMapping("/addstock")
+//    public ResponseEntity<Map<String, Object>> addStock(@RequestBody Stock stock) {
+//        try {
+//            Map<String, Object> result = employeeService.addStock(stock);
+//            return new ResponseEntity<>(result, HttpStatus.CREATED);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(Map.of("message", "Failed to add stock", "error", e.getMessage()), HttpStatus.BAD_REQUEST);
+//        }
+//    }
+//
+//    @GetMapping("/getcategorydata")
+//    public ResponseEntity<Map<String, Object>> getStockByCategory(@RequestParam String category) {
+//        try {
+//            Map<String, Object> result = employeeService.getStockByCategory(category);
+//            return new ResponseEntity<>(result, HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(Map.of("message", "Failed to fetch stock by category", "error", e.getMessage()), HttpStatus.BAD_REQUEST);
+//        }
+//    }
 
-    @PostMapping("/addstock")
-    public ResponseEntity<Map<String, Object>> addStock(@RequestBody Stock stock) {
-        try {
-            Map<String, Object> result = employeeService.addStock(stock);
-            return new ResponseEntity<>(result, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(Map.of("message", "Failed to add stock", "error", e.getMessage()), HttpStatus.BAD_REQUEST);
-        }
-    }
+
+
 
     @GetMapping("/getcategorydata")
-    public ResponseEntity<Map<String, Object>> getStockByCategory(@RequestParam String category) {
+    public ResponseEntity<Map<String, Object>> getStockByCategorythorughwebClient(@RequestParam("category") String category) {
         try {
-            Map<String, Object> result = employeeService.getStockByCategory(category);
+            Map<String, Object> result = employeeService.getStockByCategorythorughwebClient(category).block();  // Use block() to wait for response
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(Map.of("message", "Failed to fetch stock by category", "error", e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Map.of("message", "Failed to fetch stock data", "error", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
+
+
+
+
 
 
 }

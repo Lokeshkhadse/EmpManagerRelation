@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +34,9 @@ public class EmployeeServiceImpl implements  EmployeeService {
 
     @Autowired
     private StockFeignClient stockFeignClient;
+
+    @Autowired
+    private  WebclientService webclientService;
 
     public Employee addEmployee(Employee employee) {
         employeeDao.addEmployee(employee);
@@ -149,6 +153,12 @@ public class EmployeeServiceImpl implements  EmployeeService {
     public Map<String, Object> getStockByCategory(String category) {
         return stockFeignClient.getStockByCategory(category).getBody();
     }
+
+
+    public Mono<Map> getStockByCategorythorughwebClient(String category) {
+        return webclientService.getStockByCategorythorughwebClient(category);  // Call WebClient service to get stock data by category
+    }
+
 
 
 }

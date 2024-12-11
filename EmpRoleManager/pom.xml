@@ -65,6 +65,12 @@
 				<version>4.2.0</version>
 			</dependency>
 
+			<!-- WebClient Dependency -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-webflux</artifactId>
+			</dependency>
+
 
 
 		<dependency>
